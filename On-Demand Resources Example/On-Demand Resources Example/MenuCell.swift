@@ -10,18 +10,9 @@ import UIKit
 
 class MenuCell: UITableViewCell {
 
+    /// Label that shows download progress.
     @IBOutlet weak var isDownloaded: UILabel!
+    /// Progress view that shows download progress.
     @IBOutlet weak var progressView: UIProgressView!
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
 
 }

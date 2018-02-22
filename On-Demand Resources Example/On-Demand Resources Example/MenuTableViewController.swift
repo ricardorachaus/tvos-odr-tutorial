@@ -10,7 +10,12 @@ import UIKit
 
 class MenuTableViewController: UITableViewController {
 
+    // MARK: - Properties
+    
+    /// Array that holds the celebrities names and their tags.
     var celebrities: [String]!
+    
+    // MARK: - View Did Load
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,9 +47,11 @@ class MenuTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath) as! MenuCell
         
+        // Hide the label and presents the progress view during download.
         cell.isDownloaded.isHidden = true
         cell.progressView.isHidden = false
         
+        // Request assets according to the tag passed of the array in the position selected.
         ODRManager.shared.requestImage(with: celebrities[indexPath.row], onSuccess: {
             OperationQueue.main.addOperation {
                 cell.progressView.isHidden = true
@@ -53,6 +60,7 @@ class MenuTableViewController: UITableViewController {
                 self.performSegue(withIdentifier: "ClickedSegue", sender: indexPath)
             }
         }) { (error) in
+            // It's a good practice show a visual feedback to the user about the error.
             let controller = UIAlertController(title: "Error", message: "There was an error", preferredStyle: .alert)
             
             switch error.code{
@@ -76,6 +84,10 @@ class MenuTableViewController: UITableViewController {
         }
     }
     
+    
+    // MARK: - Segue Methods
+    
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ClickedSegue" {
             let celebrityViewController = segue.destination as! CelebrityViewController
@@ -84,10 +96,28 @@ class MenuTableViewController: UITableViewController {
     }
 }
 
+
+// MARK: - ODRManager
+
+/**
+ On-Demand Resource Manager
+ */
 class ODRManager {
+    /// Hold the instance of the singleton.
     static let shared = ODRManager()
+    
+    /// The current resource requested.
     var currentRequest: NSBundleResourceRequest?
     
+    
+    /**
+        Request the image from the server.
+     
+        - parameters:
+            - tag: Name of the tag.
+            - onSuccess: Completion to handle the success.
+            - onFailure: Completion to handle the failure.
+     */
     func requestImage(with tag: String, onSuccess: @escaping () -> Void, onFailure: @escaping (NSError) -> Void){
         currentRequest = NSBundleResourceRequest(tags: [tag])
         
